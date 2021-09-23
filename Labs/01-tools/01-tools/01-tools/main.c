@@ -20,7 +20,8 @@
  * directives. This is a common mistake.
  */
 #define LED_GREEN   PB5 // AVR pin where green LED is connected
-#define SHORT_DELAY 10 // Delay in milliseconds
+#define SHORT_DELAY 100 // Delay in milliseconds
+#define LONG_DELAY 300
 #ifndef F_CPU           // Preprocessor directive allows for conditional
                         // compilation. The #ifndef means "if not defined".
 # define F_CPU 16000000 // CPU frequency in Hz required for delay
@@ -43,21 +44,69 @@ int main(void)
 {
     // Set pin as output in Data Direction Register
     // DDRB = DDRB or 0010 0000
-    DDRB = DDRB | (1<<LED_GREEN);
+    DDRB = DDRB | (1<<LED_GREEN);       //zapnuti ledky
 
     // Set pin LOW in Data Register (LED off)
     // PORTB = PORTB and 1101 1111
-    PORTB = PORTB & ~(1<<LED_GREEN);
+    PORTB = PORTB & ~(1<<LED_GREEN);  
 
     // Infinite loop
     while (1)
     {
         // Pause several milliseconds
-        _delay_ms(SHORT_DELAY);
+       // _delay_ms(SHORT_DELAY);
 
         // Invert LED in Data Register
         // PORTB = PORTB xor 0010 0000
+       // PORTB = PORTB ^ (1<<LED_GREEN);
+        /////////////////////////////////////
+        
+        /*    
+        základní èasovou jednotkou je délka teèky.
+        èárka má stejnou dobu trvání jako tøi teèky.
+        zvuková pauza uvnitø znaèky má stejnou dobu trvání jako jedna teèka.
+        zvuková pauza mezi znaèkami má stejnou dobu trvání jako jedna èárka.
+        */
+        //D
+        _delay_ms(LONG_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(SHORT_DELAY);
         PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        DDRB = DDRB | (1<<LED_GREEN);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(LONG_DELAY);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        //E
+        _delay_ms(SHORT_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(LONG_DELAY);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        //2
+        _delay_ms(SHORT_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        DDRB = DDRB | (1<<LED_GREEN);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        _delay_ms(LONG_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(SHORT_DELAY);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        _delay_ms(LONG_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(SHORT_DELAY);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
+        _delay_ms(LONG_DELAY);
+        DDRB = DDRB | (1<<LED_GREEN);
+        _delay_ms(SHORT_DELAY);
+        PORTB = PORTB ^ (1<<LED_GREEN);
+        
     }
 
     // Will never reach this
