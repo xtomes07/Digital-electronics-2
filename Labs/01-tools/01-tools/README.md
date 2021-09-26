@@ -43,8 +43,19 @@ int main(void)
     {
         // Pause several milliseconds
         _delay_ms(SHORT_DELAY);
-
-        // WRITE YOUR CODE HERE
+        
+        PORTB = PORTB ^ (1<<LED_GREEN);      //LED ON -krátká doba pro tečku
+        _delay_ms(SHORT_DELAY);
+        
+        PORTB = PORTB ^ (1<<LED_GREEN);      //LED OFF
+        _delay_ms(SHORT_DELAY);
+        
+        PORTB = PORTB ^ (1<<LED_GREEN);      //LED ON - dlouhá doba pro čárku
+        _delay_ms(3*SHORT_DELAY);
+       
+       PORTB = PORTB ^ (1<<LED_GREEN);       //LED OFF
+        _delay_ms(SHORT_DELAY);
+        
     }
 
     // Will never reach this
