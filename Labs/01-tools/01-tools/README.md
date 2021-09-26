@@ -1,6 +1,6 @@
 # Lab 1: Jiří Tomešek
 
-   [My Digital-electronics-2` GitHub repository](https://github.com/xtomes07/Digital-electronics-2)
+   [My Digital-electronics-2 GitHub repository](https://github.com/xtomes07/Digital-electronics-2)
 
 
 ### Blink example
@@ -55,4 +55,4 @@ int main(void)
 
 2. Scheme of Morse code application, i.e. connection of AVR device, LED, resistor, and supply voltage. The image can be drawn on a computer or by hand. Always name all components and their values!
 
-   ![your figure]()
+   ![Schema](schema.png)
