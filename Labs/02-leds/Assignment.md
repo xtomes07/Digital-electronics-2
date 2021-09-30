@@ -17,14 +17,14 @@ Link to my `Digital-electronics-2` GitHub repository:
 | **PORTB** | **Description** |
 | :-: | :-- |
 | 0 | Output low value |
-| 1 | Output high valuev |
+| 1 | Output high value |
 
 | **DDRB** | **PORTB** | **Direction** | **Internal pull-up resistor** | **Description** |
 | :-: | :-: | :-: | :-: | :-- |
 | 0 | 0 | input | no | Tri-state, high-impedance |
-| 0 | 1 | | | |
-| 1 | 0 | | | |
-| 1 | 1 | | | |
+| 0 | 1 | input | yes | Pxn will source currnet if ext. pulled low.|
+| 1 | 0 | output | no | Output Low (Source) |
+| 1 | 1 | output | no | Output High (Source) |
 
 2. Part of the C code listing with syntax highlighting, which blinks alternately with a pair of LEDs; let one LED is connected to port B and the other to port C:
 
@@ -33,12 +33,14 @@ int main(void)
 {
     // Green LED at port B
     // Set pin as output in Data Direction Register...
-    DDRB = DDRB | (1<<LED_GREEN);
+    DDRB = DDRB | (1<<LED_GREEN);   //active high
     // ...and turn LED off in Data Register
     PORTB = PORTB & ~(1<<LED_GREEN);
 
     // Configure the second LED at port C
-    // WRITE YOUR CODE HERE
+    
+    DDRC = DDRC  | (1<<LED_BREABOARD);       //active LOW
+    PORTC = PORTC ^(1<<LED_BREABOARD);     
 
     // Infinite loop
     while (1)
@@ -46,7 +48,13 @@ int main(void)
         // Pause several milliseconds
         _delay_ms(BLINK_DELAY);
 
-        // WRITE YOUR CODE HERE
+        PORTB = PORTB ^(1<<LED_GREEN);    //ON     1
+        _delay_ms(BLINK_DELAY);
+        PORTB = PORTB ^(1<<LED_GREEN);    //OFF    0
+    
+        PORTC = PORTC ^(1<<LED_BREABOARD);  //ON   0
+        _delay_ms(BLINK_DELAY);
+        PORTC = PORTC ^(1<<LED_BREABOARD); //OFF   1
     }
 
     // Will never reach this
