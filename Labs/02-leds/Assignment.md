@@ -40,7 +40,7 @@ int main(void)
     // Configure the second LED at port C
     
     DDRC = DDRC  | (1<<LED_BREABOARD);       //active LOW
-    PORTC = PORTC ^(1<<LED_BREABOARD);     
+    PORTC = PORTC | (1<<LED_BREABOARD);     
 
     // Infinite loop
     while (1)
@@ -69,7 +69,8 @@ int main(void)
 
 ```c
     // Configure Push button at port D and enable internal pull-up resistor
-    // WRITE YOUR CODE HERE
+    DDRD = DDRD & ~(1 << BUTTON); // input
+	 PORTD = PORTD| (1 << BUTTON); // pull up
 
     // Infinite loop
     while (1)
@@ -77,7 +78,16 @@ int main(void)
         // Pause several milliseconds
         _delay_ms(BLINK_DELAY);
 
-        // WRITE YOUR CODE HERE
+        if(bit_is_clear(PIND, BUTTON))
+		      {
+				PORTB = PORTB ^(1<<LED_GREEN);	//ON     1
+				_delay_ms(BLINK_DELAY);
+				PORTB = PORTB ^(1<<LED_GREEN);	//OFF    0
+				
+				PORTC = PORTC ^(1<<LED_BREABOARD);	//ON     0
+				_delay_ms(BLINK_DELAY);
+				PORTC = PORTC ^(1<<LED_BREABOARD);	//OFF     1
+		      }
     }
 ```
 
