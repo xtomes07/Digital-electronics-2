@@ -70,7 +70,7 @@ int main(void)
 ```c
     // Configure Push button at port D and enable internal pull-up resistor
     DDRD = DDRD & ~(1 << BUTTON); // input
-	 PORTD = PORTD| (1 << BUTTON); // pull up
+    PORTD = PORTD| (1 << BUTTON); // pull up
 
     // Infinite loop
     while (1)
