@@ -55,7 +55,7 @@ int main(void)
         _delay_ms(BLINK_DELAY);
         GPIO_write_low(&PORTB, LED_GREEN);
         // WRITE YOUR CODE HERE
-        GPIO_write_toggle(&PORTB, LED_GREEN);
+        GPIO_toggle(&PORTB, LED_GREEN);
         
         
     }
