@@ -30,14 +30,17 @@ Link to my `Digital-electronics-2` GitHub repository:
 ```c
     // Configure Push button at port D and enable internal pull-up resistor
     // WRITE YOUR CODE HERE
+    GPIO_config_input_pullup(&DDRD, BUTTON);
 
     // Infinite loop
     while (1)
     {
         // Pause several milliseconds
-        _delay_ms(BLINK_DELAY);
-
-        // WRITE YOUR CODE HERE
+        if (GPIO_read(&PIND, BUTTON) == 0) {
+            _delay_ms(BLINK_DELAY);
+            PORTC ^= (1 << LED_RED);
+            PORTB ^= (1 << LED_GREEN);
+        }
     }
 ```
 
