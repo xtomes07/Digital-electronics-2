@@ -1,8 +1,8 @@
 # Lab 3: YOUR_FIRSTNAME FAMILYNAME
 
-Link to your `Digital-electronics-2` GitHub repository:
+Link to my `Digital-electronics-2` GitHub repository:
 
-   [https://github.com/...](https://github.com/...)
+   https://github.com/xtomes07/Digital-electronics-2
 
 
 ### Data types in C
