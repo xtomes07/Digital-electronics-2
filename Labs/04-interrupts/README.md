@@ -8,13 +8,11 @@ Link to your `Digital-electronics-2` GitHub repository:
 ### Overflow times
 
 1. Complete table with overflow times.
-
 | **Module** | **Number of bits** | **1** | **8** | **32** | **64** | **128** | **256** | **1024** |
 | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| Timer/Counter0 | 8  | 16u | 128u | -- | | -- | | |
-| Timer/Counter1 | 16 |     |      | -- | | -- | | |
-| Timer/Counter2 | 8  |     |      |    | |    | | |
-
+| Timer/Counter0 | 8  | 16u | 128u | -- | 1024 us | -- | 4.096 ms | 16.384 ms |
+| Timer/Counter1 | 16 | 4.096 ms | 32.768 ms | -- | 262.144 ms | -- | 1.048576 s | 4.194304 s |
+| Timer/Counter2 | 8  | 16u | 128u | -- | 1024 us | -- | 4.096 ms | 16.384 ms |
 
 ### Timer library
 
