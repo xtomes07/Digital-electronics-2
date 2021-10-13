@@ -1,4 +1,4 @@
-# Lab 3: YOUR_FIRSTNAME FAMILYNAME
+# Lab 3: Jiří Tomešek
 
 Link to my `Digital-electronics-2` GitHub repository:
 
