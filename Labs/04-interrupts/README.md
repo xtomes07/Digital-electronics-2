@@ -19,7 +19,7 @@ Link to your `Digital-electronics-2` GitHub repository:
 
 1. In your words, describe the difference between common C function and interrupt service routine.
    * Function - generický blok kódu, který budem v našem kódu víckrát používat. Tento blok lze volat z jakékoli části programu.
-   * Interrupt service routine - funkce, na kterou skočíme, když dojde k přerušení, obvykle krátké. Hlavní program je zastaven a poté, co je ISR spuštěn, pokračuje ze stejného bodu, kde byl zastaven
+   * Interrupt service routine - funkce, na kterou skočíme, když dojde k přerušení. Hlavní program je zastaven a poté, co je ISR spuštěn, pokračuje ze stejného bodu, kde byl zastaven
 
 2. Part of the header file listing with syntax highlighting, which defines settings for Timer/Counter0:
 
