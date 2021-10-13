@@ -1,8 +1,8 @@
-# Lab 4: YOUR_FIRSTNAME FAMILYNAME
+# Lab 4: Jiří Tomešek
 
 Link to your `Digital-electronics-2` GitHub repository:
 
-   [https://github.com/...](https://github.com/...)
+  https://github.com/xtomes07/Digital-electronics-2
 
 
 ### Overflow times
