@@ -13,7 +13,7 @@ Link to your `Digital-electronics-2` GitHub repository:
 | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 | Timer/Counter0 | 8  | 16u | 128u | -- | 1024 us | -- | 4.096 ms | 16.384 ms |
 | Timer/Counter1 | 16 | 4.096 ms | 32.768 ms | -- | 262.144 ms | -- | 1.048576 s | 4.194304 s |
-| Timer/Counter2 | 8  | 16u | 128u | -- | 1024 us | -- | 4.096 ms | 16.384 ms |
+| Timer/Counter2 | 8  | 16u | 128u | 512us | 1024 us | 2.048ms | 4.096 ms | 16.384 ms |
 
 ### Timer library
 
