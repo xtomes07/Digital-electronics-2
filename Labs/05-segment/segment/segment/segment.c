@@ -16,20 +16,21 @@
 #include <util/delay.h>
 #include "gpio.h"
 #include "segment.h"
+
 /* Variables ---------------------------------------------------------*/
 // Active-low digit 0 to 9
 uint8_t segment_value[] = {
     // abcdefgDP
-    0b00000011,          // Digit 0
-    0b10011111,          // Digit 1
-    0b00100101,          // Digit 2
-    0b00001101,          // Digit 3
-    0b10011001,          // Digit 4
-    0b01001001,
-    0b01000001,
-    0b00011111,
-    0b00000001,
-    0b00001001
+    0b00000011, // Digit 0
+    0b10011111, // Digit 1
+    0b00100101, // Digit 2
+    0b00001101, // Digit 3
+    0b10011001, // Digit 4
+    0b01001001, // Digit 5
+    0b01000001, // Digit 6
+    0b00011111, // Digit 7
+    0b00000001, // Digit 8
+    0b00011001  // Digit 9
 };
 
 // Active-high position 0 to 3
@@ -66,14 +67,15 @@ void SEG_init(void)
 void SEG_update_shift_regs(uint8_t segments, uint8_t position)
 {
     uint8_t bit_number;
-    segments = segment_value [segments];
-    position = segment_position [position];
-   
-    // Pull LATCH, CLK, and DATA low    z GPIO
-    GPIO_write_low(&PORTD, SEG_LATCH);
-    GPIO_write_low(&PORTD, SEG_CLK);
-    GPIO_write_low(&PORTB, SEG_DATA);
-    // Wait 1 us    
+    segments = segment_value[segments];     // 0, 1, ..., 9
+    position = segment_position[position];  // 0, 1, 2, 3
+
+    // Pull LATCH, CLK, and DATA low
+    GPIO_write_low(&PORT_LATCH, SEG_LATCH);
+    GPIO_write_low(&PORT_CLK, SEG_CLK);
+    GPIO_write_low(&PORT_DATA, SEG_DATA);
+
+    // Wait 1 us
     _delay_us(1);
 
     // Loop through the 1st byte (segments)
@@ -82,62 +84,66 @@ void SEG_update_shift_regs(uint8_t segments, uint8_t position)
     {
         // Test LSB of "segments" by & (faster) or % (slower) and... 
         // ...output DATA value
+        PORT_DATA = ((segments & 1) == 0) ? PORT_DATA & ~(1 << SEG_DATA) : PORT_DATA | (1 << SEG_DATA);
+        // Shift "segments"
+        segments >>= 1;
         
-        if((segments & 0b00000001 ) ==0)
-        GPIO_write_low(&PORTB, SEG_DATA);
-        else
-        GPIO_write_high(&PORTB, SEG_DATA);
-
-        // Wait 1 us
-         _delay_us(1);
-
-        // Pull CLK high
-        GPIO_write_high(&PORTD, SEG_CLK);
         // Wait 1 us
         _delay_us(1);
-        
+        // Pull CLK high
+        PORT_CLK |= (1 << SEG_CLK);
+        // Wait 1 us
+        _delay_us(1);
         // Pull CLK low
-         GPIO_write_low(&PORTD, SEG_CLK);
-         
-        // Shift "segments"
-        segments = segments >> 1;
-       
+        PORT_CLK &= ~(1 << SEG_CLK);
     }
 
     // Loop through the 2nd byte (position)
     // p3 p2 p1 p0 . . . . (active high values)
     for (bit_number = 0; bit_number < 8; bit_number++)
     {
-       // Test LSB of "position" by & (faster) or % (slower) and...
-       // ...output DATA value
-      if((position & 0b00000001) == 0)
-      GPIO_write_low(&PORTB, SEG_DATA);
-      else
-      GPIO_write_high(&PORTB, SEG_DATA);
-       // Wait 1 us
-        _delay_us(1);  
-       // Pull CLK high
-         GPIO_write_high(&PORTD, SEG_CLK);
-       // Wait 1 us
+        // Test LSB of "position" by & (faster) or % (slower) and... 
+        // ...output DATA value
+        PORT_DATA = ((position & 1) == 0) ? PORT_DATA & ~(1 << SEG_DATA) : PORT_DATA | (1 << SEG_DATA);
+        // Shift "position"
+        position = position >> 1;
+        
+        // Wait 1 us
         _delay_us(1);
-       // Pull CLK low
-        GPIO_write_low(&PORTD, SEG_CLK);
-       // Shift "position"
-       position = position >> 1;
-       
+        // Pull CLK high
+        PORT_CLK |= (1 << SEG_CLK);
+        // Wait 1 us
+        _delay_us(1);
+        // Pull CLK low
+        PORT_CLK &= ~(1 << SEG_CLK);
     }
 
     // Pull LATCH high
-    GPIO_write_high(&PORTD, SEG_LATCH);
+    PORT_LATCH |= (1 << SEG_LATCH);
     // Wait 1 us
     _delay_us(1);
-
 }
 
 /**********************************************************************
  * Function: SEG_clear()
  **********************************************************************/
+void SEG_clear (void)
+{
+    for (uint8_t i = 0; i < 4; i++)
+        SEG_update_shift_regs(~(uint8_t)0, segment_position[i]);        
+}
 
 /**********************************************************************
  * Function: SEG_clk_2us()
  **********************************************************************/
+void SEG_clk_2us(void)
+{
+    // Wait 1 us
+    _delay_us(1);
+    // Pull CLK high
+    PORT_CLK |= (1 << SEG_CLK);
+    // Wait 1 us
+    _delay_us(1);
+    // Pull CLK low
+    PORT_CLK &= ~(1 << SEG_CLK);
+}
