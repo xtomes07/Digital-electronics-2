@@ -9,18 +9,15 @@
  * 
  **********************************************************************/
 
-#ifndef F_CPU
-# define F_CPU 16000000
-#endif
-
 /* Includes ----------------------------------------------------------*/
+
 #include <avr/io.h>         // AVR device-specific IO definitions
 #include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
 #include "timer.h"          // Timer library for AVR-GCC
 #include "segment.h"        // Seven-segment display library for AVR-GCC
-#include <util/delay.h>
+int i_s =0;
+int i_p =0;
 
-uint16_t val = 0;
 
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
@@ -33,16 +30,22 @@ int main(void)
 {
     // Configure SSD signals
     SEG_init();
-    SEG_clear();
-    
+
+    // Test of SSD: display number '3' at position 0
+    //SEG_update_shift_regs(0b00001101, 0b00010000);
+	SEG_update_shift_regs(0, 0);
+
     // Configure 16-bit Timer/Counter1 for Decimal counter
-    TIM1_overflow_262ms();
-    TIM0_overflow_128us();
     // Set the overflow prescaler to 262 ms and enable interrupt
-    TIM1_overflow_interrupt_enable();
-    TIM0_overflow_interrupt_enable();
+	TIM1_overflow_262ms();
+	TIM1_overflow_interrupt_enable();
+
+	TIM0_overflow_128us();
+	TIM0_overflow_interrupt_enable();
+
     // Enables interrupts by setting the global interrupt mask
-    sei();
+	sei();
+	
 
     // Infinite loop
     while (1)
@@ -62,22 +65,30 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-    val++;
-    if (val == 59) val = 0; //èíta jen od 0 do 59, kdyby mela do fullu tak bude 9999
+	if(i_s<10)	//citani cisel
+	{
+		SEG_update_shift_regs(i_s, i_p); //segment, position
+		i_s= i_s + 1;	//navyseni cisla o jednocku
+	}
+	else //kdyz je vetsi nez 9 => 0 a zapise se z jednotek do desitek...desitek do stovek atd
+	{
+		i_s=0;
+		
+		if(i_p==3)
+		{
+		i_p=0;
+		
+		}
+		else
+		{
+		i_p= i_p + 1;
+		}
+		
+	}
 }
 
 ISR(TIMER0_OVF_vect)
 {
-    static uint8_t pos = 0;  // This line will only run the first time
-    static int pow10[5] = { 1, 10, 100, 1000, 10000 };
-    
-    // calculate digit from number and pos
-    uint16_t loc_val = (val % pow10[pos+1]) / (pow10[pos]);
-    
-    // Update segment
-    SEG_update_shift_regs(loc_val, pos);
-    
-    // Increment to go to next segment
-    pos++;
-    if (pos == 4) pos = 0;
+	static uint8_t pos = 0;  // This line will only run the first time
+	...
 }
