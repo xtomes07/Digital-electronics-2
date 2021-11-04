@@ -11,12 +11,12 @@ Link to this file in your GitHub repository:
 
    | **Push button** | **PC0[A0] voltage** | **ADC value (calculated)** | **ADC value (measured)** |
    | :-: | :-: | :-: | :-: |
-   | Right  | 0&nbsp;V | 0   |  |
-   | Up     | 0.495&nbsp;V | 101 |  |
-   | Down   | 1,203&nbsp;V | 246 |  |
-   | Left   | 1,970&nbsp;V | 403 |  |
-   | Select | 3,182&nbsp;V | 651 |  |
-   | none   | 5&nbsp;V | 1023 |  |
+   | Right  | 0&nbsp;V | 0   | 0 |
+   | Up     | 0.495&nbsp;V | 101 | 102 |
+   | Down   | 1,203&nbsp;V | 246 | 256 |
+   | Left   | 1,970&nbsp;V | 403 | 410 |
+   | Select | 3,182&nbsp;V | 651 | 640 |
+   | none   | 5&nbsp;V | 1023 | 1023 |
 
 2. Code listing of ACD interrupt service routine for sending data to the LCD/UART and identification of the pressed button. Always use syntax highlighting and meaningful comments:
 
@@ -27,47 +27,57 @@ Link to this file in your GitHub repository:
  **********************************************************************/
 ISR(ADC_vect)
 {
+// WRITE YOUR CODE HERE
     uint16_t value = 0;
     char lcd_string[4] = "0000";
 
-    value = ADC;                  // Copy ADC result to 16-bit variable
-    itoa(value, lcd_string, 10);  // Convert decimal value to string
+    value = ADC;    // Copy ADC result to 16-bit variable
+    itoa(value, lcd_string, 10);    // Convert to string in decimal
+    lcd_gotoxy(8, 0);               // Put ADC value in decimal
+    lcd_puts("    ");    
+    lcd_gotoxy(8, 0);               // Put ADC value in decimal
+    lcd_puts(lcd_string);   
+    uart_puts("ADC value: ");
+    uart_puts(lcd_string);
+    uart_puts("\r\n");
 
-    // WRITE YOUR CODE HERE
-    lcd_gotoxy(8, 0); lcd_puts("    ");    // Put ADC value in decimal
-	lcd_gotoxy(8, 0); lcd_puts(lcd_string);    // Put ADC value in decimal
-	uart_puts("ADC value: ");
-	uart_puts(lcd_string);
-	uart_puts("\r\n");
+    itoa(value, lcd_string, 16);    // Convert to string in decimal
+    lcd_gotoxy(13,0);               // Put ADC value in hexadecimal
+    lcd_puts("   ");   
+    lcd_gotoxy(13,0);               // Put ADC value in hexadecimal
+    lcd_puts(lcd_string);    
 
-	itoa(value, lcd_string, 16);    // Convert to string in decimal
-	lcd_gotoxy(13,0); lcd_puts("   ");    // Put ADC value in hexadecimal
-	lcd_gotoxy(13,0); lcd_puts(lcd_string);    // Put ADC value in hexadecimal
-
-	lcd_gotoxy(8, 1); lcd_puts("      ");    // Put button name here
-	if(value < 11)
-	{
-		lcd_gotoxy(8, 1); lcd_puts("Right");
-	}
-	else if(value < 112)
-	{
-		lcd_gotoxy(8, 1); lcd_puts("Up");
-	}
-	else if(value < 256)
-	{
-		lcd_gotoxy(8, 1); lcd_puts("Down");
-	}
-	else if(value < 413)
-	{
-		lcd_gotoxy(8, 1); lcd_puts("Left");
-	}
-	else if(value < 661)
-	{
-		lcd_gotoxy(8, 1); lcd_puts("Select");
-	}
-	else{
-		lcd_gotoxy(8, 1); lcd_puts("None");
-	}
+    lcd_gotoxy(8, 1);      // Put button name here
+    lcd_puts("      ");   
+    if(value < 11)
+    {
+        lcd_gotoxy(8, 1); 
+        lcd_puts("Right");
+    }
+    else if(value < 112)
+    {
+        lcd_gotoxy(8, 1); 
+        lcd_puts("Up");
+    }
+    else if(value < 256)
+    {
+        lcd_gotoxy(8, 1); 
+        lcd_puts("Down");
+    }
+    else if(value < 413)
+    {
+        lcd_gotoxy(8, 1); 
+        lcd_puts("Left");
+    }
+    else if(value < 661)
+    {
+        lcd_gotoxy(8, 1); 
+        lcd_puts("Select");
+    }
+    else{
+        lcd_gotoxy(8, 1);
+        lcd_puts("None");
+    }
 
 }
 ```
