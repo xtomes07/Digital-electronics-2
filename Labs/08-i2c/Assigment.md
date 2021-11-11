@@ -2,7 +2,7 @@
 
 Link to this file in your GitHub repository:
 
-[https://github.com/your-github-account/repository-name/lab_name](https://github.com/...)
+https://github.com/xtomes07/Digital-electronics-2/tree/main/Labs/08-i2c
 
 ### Arduino Uno pinout
 
@@ -40,7 +40,12 @@ ISR(TIMER1_OVF_vect)
     case STATE_IDLE:
         addr++;
         // If slave address is between 8 and 119 then move to SEND state
-
+        if ((addr>7)&&(addr<120))
+        
+            state = STATE_SEND;
+        
+        else
+            state = STATE_IDLE;
         break;
     
     // Transmit I2C slave address and get result
@@ -52,17 +57,25 @@ ISR(TIMER1_OVF_vect)
         // | 7  6  5  4  3  2  1  0 |     ACK    |
         // |a6 a5 a4 a3 a2 a1 a0 R/W|   result   |
         // +------------------------+------------+
-        result = twi_start((addr<<1) + TWI_WRITE);
+
         twi_stop();
         /* Test result from I2C bus. If it is 0 then move to ACK state, 
          * otherwise move to IDLE */
-
+        if(result == 0)
+            state=STATE_ACK;
+        else
+            state=STATE_IDLE; 
         break;
 
     // A module connected to the bus was found
     case STATE_ACK:
         // Send info about active I2C slave to UART and move to IDLE
-
+        
+        itoa(addr,uart_string,16);
+        uart_puts(uart_string);
+        uart_puts("  ");
+        
+        state = STATE_IDLE;
         break;
 
     // If something unexpected happens then move to IDLE
@@ -75,7 +88,7 @@ ISR(TIMER1_OVF_vect)
 
 2. (Hand-drawn) picture of I2C signals when reading checksum (only 1 byte) from DHT12 sensor. Indicate which specific moments control the data line master and which slave.
 
-   ![your figure]()
+   ![your figure](Images/prubehy.jpg)
 
 ### Meteo station
 
@@ -83,4 +96,4 @@ Consider an application for temperature and humidity measurement and display. Us
 
 1. FSM state diagram picture of meteo station. The image can be drawn on a computer or by hand. Concise name of individual states and describe the transitions between them.
 
-   ![your figure]()
+   ![your figure](Images/diagram.jpg)
