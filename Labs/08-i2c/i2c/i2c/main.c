@@ -28,7 +28,10 @@
 typedef enum {              // FSM declaration
     STATE_IDLE = 1,
     STATE_SEND,
-    STATE_ACK
+    STATE_ACK,
+    STATE_HUMID,        //for temrerature
+    STATE_TEMP,
+    STATE_CHECK
 } state_t;
 
 /* Function definitions ----------------------------------------------*/
@@ -77,7 +80,7 @@ int main(void)
 ISR(TIMER1_OVF_vect)
 {
     static state_t state = STATE_IDLE;  // Current state of the FSM
-    static uint8_t addr = 7;            // I2C slave address
+    static uint8_t addr = 0x5c;            // I2C slave address
     uint8_t result = 1;                 // ACK result from the bus
     char uart_string[2] = "00"; // String for converting numbers by itoa()
 
@@ -86,16 +89,14 @@ ISR(TIMER1_OVF_vect)
     {
     // Increment I2C slave address
     case STATE_IDLE:
-        addr++;
+ //       addr++;
         // If slave address is between 8 and 119 then move to SEND state
-        if ((addr>7) && (addr<120))
-        {
-            state= STATE_SEND;
-        }
+        if ((addr>7)&&(addr<120))
+        
+            state = STATE_SEND;
+        
         else
-        {
             state = STATE_IDLE;
-        }
         break;
     
     // Transmit I2C slave address and get result
@@ -108,27 +109,50 @@ ISR(TIMER1_OVF_vect)
         // |a6 a5 a4 a3 a2 a1 a0 R/W|   result   |
         // +------------------------+------------+
         result = twi_start((addr<<1) + TWI_WRITE);
+        
+        twi_write(0x00);
+        twi_stop();
+ 
+         result = twi_start((addr<<1) + TWI_READ);  //vlhkost
+         result=twi_read_ack();
+         itoa(result,uart_string,10);
+         uart_puts(uart_string);
+         
+         result=twi_read_nack();
+         twi_stop();
+         itoa(result,uart_string,10);
+         uart_puts(".");
+         uart_puts(uart_string);
+         uart_puts(" ");
+             
+        result = twi_start((addr<<1) + TWI_READ);     //teplota
+        result=twi_read_ack();
+        itoa(result,uart_string,10);
+        uart_puts(uart_string);
+        
+        result=twi_read_nack();
+        twi_stop();
+        itoa(result,uart_string,10);
+        uart_puts(".");
+        uart_puts(uart_string);
+        uart_puts("\n\r");   
+        
         twi_stop();
         /* Test result from I2C bus. If it is 0 then move to ACK state, 
          * otherwise move to IDLE */
-        if (result == 0)
-        {
-            state = STATE_ACK;
-        }
+      /*   if(result == 0)
+            state=STATE_ACK;
         else
-        {
-            state = STATE_IDLE;      
-        }        
-        
-
+            state=STATE_IDLE; */
         break;
 
     // A module connected to the bus was found
     case STATE_ACK:
         // Send info about active I2C slave to UART and move to IDLE
+        
         itoa(addr,uart_string,16);
         uart_puts(uart_string);
-        uart_puts(" ");
+        uart_puts("  ");
         
         state = STATE_IDLE;
         break;
